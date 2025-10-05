@@ -1,0 +1,64 @@
+openapi: 3.1.0
+info:
+  title: AudioTalk API
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080/audiotalk/v1
+paths:
+  /dictionary:
+    get:
+      summary: List discoverable tokens and mappings
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Register or update tokens (admin)
+      responses:
+        '200': { description: OK }
+  /intent:
+    post:
+      summary: Parse a natural phrase into a plan
+      responses:
+        '200': { description: Plan }
+  /intent/apply:
+    post:
+      summary: Apply a plan atomically
+      responses:
+        '200': { description: OK }
+  /macros:
+    get:
+      summary: List macros
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create a macro from a plan
+      responses:
+        '201': { description: Created }
+  /lesson/ab:
+    post:
+      summary: A/B ear-training lesson
+      responses:
+        '200': { description: OK }
+  /notation/sessions:
+    post:
+      summary: Create a LilyPond notation session
+      responses:
+        '201': { description: Created }
+  /notation/{id}/score:
+    put:
+      summary: Upload/replace LilyPond source
+      responses:
+        '200': { description: OK }
+    get:
+      summary: Fetch LilyPond source
+      responses:
+        '200': { description: OK }
+  /notation/{id}/render:
+    post:
+      summary: Render LilyPond to artifacts
+      responses:
+        '200': { description: OK }
+  /ump/{session}/send:
+    post:
+      summary: Send batch UMP packets (MIDI 2.0)
+      responses:
+        '202': { description: Accepted }
