@@ -17,3 +17,6 @@ This repository provides the **source of truth** for the AudioTalk project.
 We do **not** ship a stub server here.  
 AudioTalk defines contracts and vision first. Implementations may vary, but the **API contract** is canonical.
 
+## Status & Next Steps
+
+See `STATUS-AUDIT.md` for the current ScoreKit audit, prioritized gaps (ties, compound meters, CoreMIDI scheduling), and a hook‑in plan for tomorrow.
