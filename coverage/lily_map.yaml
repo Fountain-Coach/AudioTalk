@@ -1,0 +1,70 @@
+map:
+  # Spacing
+  Spacing.duration_base:
+    - RULE.Spacing.duration_base_with_optical_corrections
+  Spacing.keep_inside_system:
+    - RULE.Spacing.keep_inside_system_constraints
+
+  # Beaming
+  Beaming.subdivision:
+    - RULE.Beaming.subdivision_preference
+  Beaming.compound:
+    - RULE.Beaming.compound_meter_grouping
+  Beaming.auto_knee:
+    - RULE.Beaming.auto_knee_threshold
+  Beaming.flags_suppression:
+    - RULE.Beaming.suppress_flags_when_beamed
+  Beaming.geometry: []  # TODO
+  Beaming.rest_split: []  # TODO
+
+  # Accidentals / Key
+  Accidental.leading_padding:
+    - RULE.Accidental.leading_padding_and_column_inflation
+  Accidental.key_signature_positions:
+    - RULE.Accidental.key_signature_positions_by_clef
+  Accidental.cautionary: []  # TODO
+  Accidental.microtonal: []  # TODO
+
+  # Ledger
+  Ledger.shorten_near_accidental:
+    - RULE.Ledger.shorten_near_accidental
+
+  # Collision / Vertical
+  Collision.priority_lattice:
+    - RULE.Collision.priority_lattice
+  Vertical.min_dist_padding_and_stretch:
+    - RULE.Vertical.min_dist_padding_and_stretch
+
+  # Dynamics / Text
+  Dynamics.align_with_noteheads:
+    - RULE.Dynamics.align_with_noteheads_and_stems
+  Lyrics.alignment: []  # TODO
+  Ornaments.placement: []  # TODO
+
+  # Pagination / Layout
+  Pagination.castoff_penalties:
+    - RULE.Pagination.castoff_fill_vs_overfull_penalties
+  PartStaff.braces_brackets: []  # TODO
+  MultiVoiceStaff.stems_directions: []  # TODO
+  MultiMeasureRests.layout: []  # TODO
+
+  # Ties / Slurs
+  Slur.curvature_choice:
+    - RULE.Slur.curvature_choice_with_collision_penalty
+  Tie.curvature: []  # TODO
+
+  # Time/Key/Clef display rules
+  Clef.placement: []  # TODO
+  KeySignature.courtesy: []  # TODO
+  TimeSignature.courtesy: []  # TODO
+
+  # Rhythm details
+  Tuplet.beaming: []  # TODO
+  Grace.clusters: []  # TODO
+  CrossStaff.beaming: []  # TODO
+
+  # Other markings
+  Ottava.placement: []  # TODO
+  RepeatVolta.layout: []  # TODO
+  RehearsalMarks.placement: []  # TODO
+  TempoMarks.placement: []  # TODO

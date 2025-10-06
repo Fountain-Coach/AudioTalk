@@ -1,0 +1,56 @@
+components:
+  # Spacing
+  - Spacing.duration_base
+  - Spacing.keep_inside_system
+
+  # Beaming
+  - Beaming.subdivision
+  - Beaming.compound
+  - Beaming.auto_knee
+  - Beaming.flags_suppression
+  - Beaming.geometry
+  - Beaming.rest_split
+
+  # Accidentals / Key
+  - Accidental.leading_padding
+  - Accidental.key_signature_positions
+  - Accidental.cautionary
+  - Accidental.microtonal
+
+  # Ledger
+  - Ledger.shorten_near_accidental
+
+  # Collision / Vertical
+  - Collision.priority_lattice
+  - Vertical.min_dist_padding_and_stretch
+
+  # Dynamics / Text
+  - Dynamics.align_with_noteheads
+  - Lyrics.alignment
+  - Ornaments.placement
+
+  # Pagination / Layout
+  - Pagination.castoff_penalties
+  - PartStaff.braces_brackets
+  - MultiVoiceStaff.stems_directions
+  - MultiMeasureRests.layout
+
+  # Ties / Slurs
+  - Slur.curvature_choice
+  - Tie.curvature
+
+  # Time/Key/Clef display rules
+  - Clef.placement
+  - KeySignature.courtesy
+  - TimeSignature.courtesy
+
+  # Rhythm details
+  - Tuplet.beaming
+  - Grace.clusters
+  - CrossStaff.beaming
+
+  # Other markings
+  - Ottava.placement
+  - RepeatVolta.layout
+  - RehearsalMarks.placement
+  - TempoMarks.placement
