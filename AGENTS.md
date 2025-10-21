@@ -98,6 +98,51 @@ Each deliverable defines Definition of Done: API doc + tests + snapshots + perf 
 
 ---
 
+## Principal Task — Cross‑Session Context Continuity
+
+Goal
+- Preserve and surface shared project context across sessions and repos so that contributors and agents can continue work seamlessly without re‑discovery.
+
+Deliverables we maintain
+- Parity Scoreboard (Engraving): `SCOREBOARD.md` classifies every curated `Engraver.*` family as Done/Partial/Todo, driven by `coverage/lily_components.yaml` + `coverage/lily_map.yaml` + rules `REGISTRY.yaml`.
+- Audit Report (Engraving): `AUDIT.md` + CI JSON artifact summarizing rule counts/status, OpenAPI parity, tests, component coverage, and grob property mapping quality.
+- CI Artifacts (Monorepo): CI uploads both the Engraving audit and scoreboard artifacts on every run to make state visible beyond a single session.
+- Submodule Sync: this repo points submodules to the latest Engraving and ScoreKit commits that keep gates green; ScoreKit README links to Engraving audit/scoreboard.
+
+Operating Model (Expand → Map → Ratify → Sync)
+1) Expand curated components from LilyPond sources (via generator),
+2) Map new Engraver/Grob families to rules (heuristic first, then explicit properties),
+3) Add/ratify rules with typed schemas and tests (update typed lock),
+4) Sync submodules and update docs/CI artifacts.
+
+Acceptance Criteria (per iteration)
+- Parity green: `check_parity.py` (components↔rules) and `check_property_parity.py` (grob properties) pass.
+- OpenAPI parity: untyped/typed in lockstep; typed lint OK; no placeholders for ratified.
+- All ratified rules have tests; audit and scoreboard artifacts published.
+- ScoreKit docs link to Engraving parity (no stale links).
+
+Maintenance Tasks & Cadence
+- Daily/Weekly
+  - Refresh Engraving audit and scoreboard in CI; review regression deltas.
+  - Convert high‑impact regex property categories to explicit mappings; keep defaults at 0.
+  - Bump submodule pointers in AudioTalk after Engraving updates; ensure monorepo CI passes.
+- As Needed
+  - Expand curated LilyPond components (generator over vendor or upstream trees) and reconcile mappings.
+  - Promote provisional rules to ratified with typed schemas and lock updates.
+  - Add a second scenario to core tests (QA polish) and keep scenario coverage job green.
+
+Owner Responsibilities
+- Engraving maintainers: rules, coverage, OpenAPI, audit/scoreboard, CI gates.
+- ScoreKit maintainers: consume rule contracts (RulesKit), keep README parity links fresh, align renderer heuristics with rule outputs.
+- Monorepo owners: ensure CI runs audit + scoreboard and uploads artifacts; coordinate submodule bumps.
+
+Risk Controls
+- Typed lock enforces ratified schema stability; migrations require explicit notes.
+- No default property mappings; regex categories allowed for breadth but continuously narrowed to specifics.
+- Audit + scoreboard artifacts ensure context continuity across sessions and contributors.
+
+---
+
 ## Next Steps (Migration Plan)
 - Create a new repo “AudioTalk‑LegacyDocs” in the Fountain‑Coach org.
 - Move top‑level legacy docs into it (see file list in PR):
@@ -114,3 +159,4 @@ Each deliverable defines Definition of Done: API doc + tests + snapshots + perf 
 - `spec/openapi.yaml` — API contract
 - `ScoreKit/AGENTS.md` — local renderer/model guidance
 - `Engraving/AGENTS.md` — rules/coverage guidance
+ - Engraving Audit/Scoreboard: see `Engraving/AUDIT.md` and `Engraving/SCOREBOARD.md`; CI artifacts `engraving-audit` and `engraving-scoreboard`.
