@@ -29,3 +29,13 @@ jobs:
         with:
           name: engraving-audit
           path: engraving-audit.json
+      - name: Build Engraving scoreboard
+        run: |
+          python Engraving/scripts/build_scoreboard.py
+          cp Engraving/SCOREBOARD.md engraving-scoreboard.md
+      - name: Upload Engraving scoreboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: engraving-scoreboard
+          path: engraving-scoreboard.md
