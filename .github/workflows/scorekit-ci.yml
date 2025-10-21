@@ -1,0 +1,32 @@
+name: ScoreKit CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Show Swift version
+        run: swift --version
+      - name: Run ScoreKit tests (debug)
+        run: |
+          cd ScoreKit
+          swift test -c debug
+      - name: Build and run ScoreKitBench (release)
+        run: |
+          cd ScoreKit
+          swift build -c release --product ScoreKitBench
+          swift run -c release ScoreKitBench || true
+      - name: Upload bench.txt (if present)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scorekit-bench
+          path: ScoreKit/bench.txt
+
