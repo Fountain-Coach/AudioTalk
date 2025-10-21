@@ -160,3 +160,17 @@ Risk Controls
 - `ScoreKit/AGENTS.md` — local renderer/model guidance
 - `Engraving/AGENTS.md` — rules/coverage guidance
  - Engraving Audit/Scoreboard: see `Engraving/AUDIT.md` and `Engraving/SCOREBOARD.md`; CI artifacts `engraving-audit` and `engraving-scoreboard`.
+
+---
+
+## Developer Commands (optional)
+These commands are for contributors who want to verify parity and generate continuity artifacts locally.
+
+- Initialize submodules
+  - `git submodule update --init --recursive`
+- Quick parity check (root helper)
+  - `./scripts/engraving_parity_check.sh`
+- Generate audit + scoreboard (inside Engraving)
+  - `cd Engraving && python scripts/audit_rules_coverage.py > AUDIT.json && python scripts/build_scoreboard.py`
+  - Outputs: `Engraving/AUDIT.json`, `Engraving/SCOREBOARD.md`
+ - Engraving Audit/Scoreboard: see `Engraving/AUDIT.md` and `Engraving/SCOREBOARD.md`; CI artifacts `engraving-audit` and `engraving-scoreboard`.
