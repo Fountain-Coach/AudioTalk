@@ -11,3 +11,7 @@ DerivedData/
 /_vendor/
 /.gh-logs/
 /*.pdf
+/ScoreKit.txt
+/.state/
+/state/
+/var/

@@ -11,6 +11,15 @@ This repository provides the **source of truth** for the AudioTalk project.
 2. Explore the `spec/openapi.yaml` to integrate AudioTalk into your services.
 3. Use SwiftNIO or your preferred Swift server framework to implement the API.
 
+### AudioTalk App (dev server)
+- Build and run:
+  - `swift run AudioTalkApp` (listens on `http://127.0.0.1:8080/audiotalk/v1`)
+- Quick check:
+  - `curl -s http://127.0.0.1:8080/audiotalk/v1/dictionary | jq .`
+  - `curl -s -X POST http://127.0.0.1:8080/audiotalk/v1/dictionary -H 'Content-Type: application/json' -d '{"token":"warm","value":"timbre:warmth:+0.4"}'`
+  - `curl -s -X POST http://127.0.0.1:8080/audiotalk/v1/intent -H 'Content-Type: application/json' -d '{"phrase":"legato crescendo warm"}' | jq .`
+  - `curl -s -X POST http://127.0.0.1:8080/audiotalk/v1/notation/sessions | jq .`
+
 ## Philosophy
 
 We do **not** ship a stub server here.
