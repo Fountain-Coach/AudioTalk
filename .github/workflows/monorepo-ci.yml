@@ -12,6 +12,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: true
+      - name: Verify submodules present
+        run: |
+          test -d Engraving/.git && echo "Engraving submodule OK" || (echo "Engraving submodule missing" && exit 1)
+          test -d ScoreKit/.git && echo "ScoreKit submodule OK" || (echo "ScoreKit submodule missing" && exit 1)
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -19,6 +23,9 @@ jobs:
       - name: Run Engraving parity checks
         run: |
           ./scripts/engraving_parity_check.sh
+      - name: Lint Engraving typed OpenAPI
+        run: |
+          python Engraving/scripts/lint_typed_openapi.py
       - name: Run Engraving audit
         run: |
           python Engraving/scripts/audit_rules_coverage.py > engraving-audit.json

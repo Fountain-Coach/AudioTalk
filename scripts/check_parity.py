@@ -4,9 +4,10 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-REG = ROOT / 'rules' / 'REGISTRY.yaml'
-COMPONENTS = ROOT / 'coverage' / 'lily_components.yaml'
-MAP = ROOT / 'coverage' / 'lily_map.yaml'
+ENGRAVING = ROOT / 'Engraving'
+REG = ENGRAVING / 'rules' / 'REGISTRY.yaml'
+COMPONENTS = ENGRAVING / 'coverage' / 'lily_components.yaml'
+MAP = ENGRAVING / 'coverage' / 'lily_map.yaml'
 
 def main():
     rules_doc = yaml.safe_load(REG.read_text())
@@ -50,4 +51,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
