@@ -2,7 +2,6 @@
 
 This repository provides the **source of truth** for the AudioTalk project.
 
-- `VISION.md` — Comprehensive vision statement and design philosophy.
 - `spec/openapi.yaml` — OpenAPI 3.1 definition of the AudioTalk API (source of truth).
 - `.gitignore` — Standard SwiftPM ignore file.
 
@@ -14,13 +13,13 @@ This repository provides the **source of truth** for the AudioTalk project.
 
 ## Philosophy
 
-We do **not** ship a stub server here.  
+We do **not** ship a stub server here.
 AudioTalk defines contracts and vision first. Implementations may vary, but the **API contract** is canonical.
 
 ## Status & Next Steps
 
 - See `AGENTS.md` for the updated, project‑wide engineering guide based on the Drift–Pattern–Reflection architecture.
-- Legacy narrative docs have moved to: https://github.com/Fountain-Coach/AudioTalk-LegacyDocs
+- Legacy narrative docs and PDFs have moved to: https://github.com/Fountain-Coach/AudioTalk-LegacyDocs
 
 ## Submodules
 This repo nests several focused projects as Git submodules:
