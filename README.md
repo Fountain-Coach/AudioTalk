@@ -35,6 +35,11 @@ Initialize/update all submodules:
 
 ```
 git submodule update --init --recursive
+
+Note on dependencies
+- Use SwiftPM to consume these projects in your packages/apps (preferred). Submodules are included here for context continuity and parity tooling, not direct source imports. Example:
+  - Add dependency: `.package(url: "https://github.com/Fountain-Coach/FountainKit.git", from: "0.1.0")`
+  - Use product: `.product(name: "FountainKit", package: "FountainKit")`
 ```
 
 If you already have the directories checked out, the pointers in `.gitmodules` align them to the corresponding upstream repos.

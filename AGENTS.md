@@ -48,6 +48,13 @@ This document aligns contributors and agents with the updated AudioTalk vision d
 - Single source of truth
   - Engraving rules → renderer behavior; avoid duplicating heuristics in UI.
   - `spec/openapi.yaml` → service boundaries; keep implementations conformant.
+- Dependencies (SwiftPM first)
+  - Prefer SwiftPM (remote) dependencies pinned to tags/versions for all cross‑repo code reuse (e.g., FountainKit, RulesKit‑SPM).
+  - Treat submodules as context only (docs, fixtures, parity tools). Do not import submodule sources directly in build targets.
+  - Avoid circular dependencies across packages; keep package graphs acyclic and compiler‑hint friendly.
+  - Example (Package.swift):
+    - `.package(url: "https://github.com/Fountain-Coach/FountainKit.git", from: "0.1.0")`
+    - Target dependency: `.product(name: "FountainKit", package: "FountainKit")`
 - Determinism
   - Stable ordering, pure transforms for diffs/snapshots.
 - Errors
