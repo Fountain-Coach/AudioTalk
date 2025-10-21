@@ -1,6 +1,6 @@
 # AGENTS.md — AudioTalk Project Engineering Guide (Drift–Pattern–Reflection)
 
-This document aligns contributors and agents with the updated AudioTalk vision described in “AudioTalk – The Composition Engine: A Drift–Pattern–Reflection Architecture for Symbolic Music Reasoning” (PDF in repo root). It replaces the ScoreKit‑only guide with a project‑wide blueprint.
+This document aligns contributors and agents with the updated AudioTalk vision described in “AudioTalk – The Composition Engine: A Drift–Pattern–Reflection Architecture for Symbolic Music Reasoning” (PDF in the LegacyDocs repository). It replaces the ScoreKit‑only guide with a project‑wide blueprint.
 
 ## Scope
 - Applies to the AudioTalk monorepo and its submodules:
@@ -114,4 +114,3 @@ Each deliverable defines Definition of Done: API doc + tests + snapshots + perf 
 - `spec/openapi.yaml` — API contract
 - `ScoreKit/AGENTS.md` — local renderer/model guidance
 - `Engraving/AGENTS.md` — rules/coverage guidance
-

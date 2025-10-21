@@ -20,7 +20,7 @@ AudioTalk defines contracts and vision first. Implementations may vary, but the 
 ## Status & Next Steps
 
 - See `AGENTS.md` for the updated, project‑wide engineering guide based on the Drift–Pattern–Reflection architecture.
-- Legacy narrative docs are being migrated to `LegacyDocs/` (staging for a separate `AudioTalk‑LegacyDocs` repository). Existing references will be updated after migration.
+- Legacy narrative docs have moved to: https://github.com/Fountain-Coach/AudioTalk-LegacyDocs
 
 ## Submodules
 This repo nests several focused projects as Git submodules:

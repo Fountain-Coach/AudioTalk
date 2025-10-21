@@ -6,8 +6,9 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 ENGRAVING = ROOT / 'Engraving'
 REG = ENGRAVING / 'rules' / 'REGISTRY.yaml'
-PROP = ROOT / 'coverage' / 'grob_properties.yaml'
-PMAP = ROOT / 'coverage' / 'grob_property_map.yaml'
+# Use Engraving's canonical coverage registry and mapping to ensure parity against the source of truth.
+PROP = ENGRAVING / 'coverage' / 'grob_properties.yaml'
+PMAP = ENGRAVING / 'coverage' / 'grob_property_map.yaml'
 
 def main():
     reg = yaml.safe_load(REG.read_text())
@@ -29,7 +30,7 @@ def main():
             exact_entries[k] = v
     missing = []
     invalid = []
-    for prop in props_doc.get('properties', []):
+    for prop in (props_doc.get('properties') or []):
         targets = exact_entries.get(prop)
         if targets is None:
             for rx, tv in regex_entries:
