@@ -14,3 +14,7 @@
 	url = https://github.com/Fountain-Coach/SDLKit.git
 	branch = main
 
+[submodule "FountainKit"]
+	path = FountainKit
+	url = https://github.com/Fountain-Coach/FountainKit.git
+	branch = main

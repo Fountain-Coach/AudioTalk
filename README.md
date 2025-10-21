@@ -29,6 +29,7 @@ This repo nests several focused projects as Git submodules:
 - `Engraving` — rule engine specs, coverage, and tests for engraving
 - `Teatro` — preview/demo apps and rendering API bridges
 - `SDLKit` — MIDI 2.0 + SDL/GPU audio backends
+- `FountainKit` — foundational backend/foundation APIs shared across projects
 
 Initialize/update all submodules:
 

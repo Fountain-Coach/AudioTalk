@@ -8,6 +8,7 @@ This document aligns contributors and agents with the updated AudioTalk vision d
   - `Engraving/` (rules, glyph metrics, coverage, OpenAPI)
   - `Teatro/` (preview apps, renderer/preview APIs)
   - `SDLKit/` (MIDI 2.0 + audio backends)
+  - `FountainKit/` (foundational backend/foundation APIs shared across projects)
 - For code inside submodules, prefer their local AGENTS.md conventions when present; this guide sets cross‑project expectations and integration rules.
 
 ## Mission
