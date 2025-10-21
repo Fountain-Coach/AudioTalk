@@ -1,0 +1,22 @@
+name: Monorepo CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run Engraving parity checks
+        run: |
+          ./scripts/engraving_parity_check.sh
+
