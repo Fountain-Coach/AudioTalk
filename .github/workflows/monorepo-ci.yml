@@ -19,4 +19,13 @@ jobs:
       - name: Run Engraving parity checks
         run: |
           ./scripts/engraving_parity_check.sh
-
+      - name: Run Engraving audit
+        run: |
+          python Engraving/scripts/audit_rules_coverage.py > engraving-audit.json
+          echo "Engraving audit:" && cat engraving-audit.json
+      - name: Upload Engraving audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: engraving-audit
+          path: engraving-audit.json
