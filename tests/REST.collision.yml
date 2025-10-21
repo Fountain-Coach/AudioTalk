@@ -1,0 +1,4 @@
+rule: RULE.RestCollision.resolve_overlaps
+cases:
+  - name: gaps_kept
+    expectations: [ { path: "/restOffsets/count", op: ">=", value: 0.0 } ]

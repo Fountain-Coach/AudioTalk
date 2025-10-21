@@ -1,0 +1,4 @@
+rule: RULE.BeamCollision.resolve_overlaps
+cases:
+  - name: minimal_offsets
+    expectations: [ { path: "/offsets/count", op: ">=", value: 0.0 } ]

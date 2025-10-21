@@ -1,0 +1,4 @@
+rule: RULE.Pedal.line_and_text_policy
+cases:
+  - name: pedal_offset
+    expectations: [ { path: "/yOffsetSP", op: ">=", value: 0.8 } ]

@@ -1,0 +1,13 @@
+[submodule "ScoreKit"]
+    path = ScoreKit
+    url = https://github.com/Fountain-Coach/ScoreKit.git
+[submodule "Engraving"]
+    path = Engraving
+    url = https://github.com/Fountain-Coach/Engraving.git
+[submodule "Teatro"]
+    path = Teatro
+    url = https://github.com/Fountain-Coach/Teatro.git
+[submodule "SDLKit"]
+    path = SDLKit
+    url = https://github.com/Fountain-Coach/SDLKit.git
+

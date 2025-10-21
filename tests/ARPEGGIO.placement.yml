@@ -1,0 +1,4 @@
+rule: RULE.Arpeggio.placement_policy
+cases:
+  - name: arpeggio_position
+    expectations: [ { path: "/position/y", op: ">=", value: 0.0 } ]

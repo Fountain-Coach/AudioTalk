@@ -1,0 +1,4 @@
+rule: RULE.TrillSpanner.placement_policy
+cases:
+  - name: trill_offset
+    expectations: [ { path: "/yOffsetSP", op: ">=", value: 0.8 } ]

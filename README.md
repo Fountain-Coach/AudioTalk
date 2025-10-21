@@ -20,3 +20,19 @@ AudioTalk defines contracts and vision first. Implementations may vary, but the 
 ## Status & Next Steps
 
 See `STATUS-AUDIT.md` for the current ScoreKit audit, prioritized gaps (ties, compound meters, CoreMIDI scheduling), and a hook‑in plan for tomorrow.
+
+## Submodules
+This repo nests several focused projects as Git submodules:
+
+- `ScoreKit` — notation model, renderer, Lily interop and playback stubs
+- `Engraving` — rule engine specs, coverage, and tests for engraving
+- `Teatro` — preview/demo apps and rendering API bridges
+- `SDLKit` — MIDI 2.0 + SDL/GPU audio backends
+
+Initialize/update all submodules:
+
+```
+git submodule update --init --recursive
+```
+
+If you already have the directories checked out, the pointers in `.gitmodules` align them to the corresponding upstream repos.
