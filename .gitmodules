@@ -2,12 +2,15 @@
     path = ScoreKit
     url = https://github.com/Fountain-Coach/ScoreKit.git
 [submodule "Engraving"]
-    path = Engraving
-    url = https://github.com/Fountain-Coach/Engraving.git
+	path = Engraving
+	url = https://github.com/Fountain-Coach/Engraving.git
+	branch = main
 [submodule "Teatro"]
-    path = Teatro
-    url = https://github.com/Fountain-Coach/Teatro.git
+	path = Teatro
+	url = https://github.com/Fountain-Coach/Teatro.git
+	branch = main
 [submodule "SDLKit"]
-    path = SDLKit
-    url = https://github.com/Fountain-Coach/SDLKit.git
+	path = SDLKit
+	url = https://github.com/Fountain-Coach/SDLKit.git
+	branch = main
 
