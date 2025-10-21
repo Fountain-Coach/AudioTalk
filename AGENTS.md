@@ -1,236 +1,117 @@
-+# AGENTS.md — ScoreKit Engineering Guide (Fountain‑Coach / AudioTalk)
+# AGENTS.md — AudioTalk Project Engineering Guide (Drift–Pattern–Reflection)
 
-This document guides contributors and agents building ScoreKit — the notation and real‑time rendering layer described in “ScoreKit: Unifying Notation and Real‑Time Rendering in Fountain‑Coach”. It operationalizes the vision from AudioTalk and the included PDF into concrete architecture, conventions, and milestones.
+This document aligns contributors and agents with the updated AudioTalk vision described in “AudioTalk – The Composition Engine: A Drift–Pattern–Reflection Architecture for Symbolic Music Reasoning” (PDF in repo root). It replaces the ScoreKit‑only guide with a project‑wide blueprint.
 
 ## Scope
-- Applies to files under these paths when they are created:
-  - `Sources/ScoreKit/**`
-  - `Sources/ScoreKitUI/**`
-  - `Examples/ScoreKit*/**`
-  - `Tests/ScoreKit*/**`
-- Other areas of the repo are not governed by this file unless explicitly stated.
+- Applies to the AudioTalk monorepo and its submodules:
+  - `ScoreKit/` (notation model, renderer, playback glue)
+  - `Engraving/` (rules, glyph metrics, coverage, OpenAPI)
+  - `Teatro/` (preview apps, renderer/preview APIs)
+  - `SDLKit/` (MIDI 2.0 + audio backends)
+- For code inside submodules, prefer their local AGENTS.md conventions when present; this guide sets cross‑project expectations and integration rules.
 
 ## Mission
-- Unify professional engraving (LilyPond as source of truth) with Swift‑native, real‑time score rendering for interactive coaching, editing, and playback.
-- Expose a stable Swift API and data model that AI (FountainAI), storage (Fountain‑Store), and audio (MIDI 2.0 / engines) can consume.
+- Establish AudioTalk as the semantic control plane for sound and notation, enabling natural language to produce faithful notation, performance, and previews.
+- Operationalize the Drift–Pattern–Reflection architecture across repos to ensure the system learns (Drift), is grounded by rules (Pattern), and verifies outcomes (Reflection).
 
-## Non‑Goals (for v0)
-- Full DAW replacement, full MEI/MusicXML round‑trip fidelity, complex page layout features (parts, cues, ossia) beyond what is needed for interactive coaching.
-
----
-
-## Architecture Overview
-- Core Data Model: immutable-ish score graph with persistent IDs (document, part, staff, measure, voice, event). Semantic annotations are first‑class.
-- Engraving Pipeline: LilyPond wrapper for publication‑quality output (PDF/SVG). LilyPond remains the canonical serialization.
-- Real‑Time Renderer: Swift renderer (CoreGraphics/SwiftUI) inspired by Verovio for immediate, incremental redraws and highlight/animation.
-- Semantics Layer: AudioTalk tags (`%!AudioTalk: ...`) and structured metadata enabling “speak music, hear it happen”.
-- I/O Gateways: Import (LilyPond subset, MusicXML/MEI if available), Export (LilyPond authoritative, SVG/PNG snapshots).
-- Integration: FountainAI (intents → ops), Fountain‑Store (versioned persistence/search), MIDI 2.0 engines (UMP per‑note playback), Teatro (UI/storyboards).
-
-Recommended SwiftPM packages:
-- `ScoreKit` (model + engraving + import/export)
-- `ScoreKitUI` (views, renderer, highlights, cursor, selection)
-
-Target platforms:
-- macOS primary. iOS supported with LilyPond disabled at runtime (see License section). Linux for server‑side batch rendering (optional).
+## Non‑Goals (phase‑wise)
+- Not a DAW replacement; no full MEI/MusicXML fidelity in v0.
+- Avoid heavy desktop editor features; prioritize live preview and explainability.
 
 ---
 
-## Module Layout (planned)
-```
-Package.swift
-Sources/
-  ScoreKit/
-    Model/
-    Semantics/
-    Engraving/
-    ImportExport/
-    Playback/
-    Core/
-  ScoreKitUI/
-    Views/
-    Rendering/
-    Interaction/
-Examples/
-  ScoreKitPlayground/
-Tests/
-  ScoreKitTests/
-  ScoreKitUITests/
-```
+## Architecture
+- Drift (Language + Macros)
+  - Extensible vocabulary: macros and descriptors; promote via review.
+  - Intent parsing produces typed operations spanning engraving + playback.
+  - Sources: LLMs, rule‑based intents, user macros; all versioned.
+- Pattern (Rules + Authority)
+  - Engraving is the canonical authority for layout/engraving rules and glyph metrics.
+  - Rules are explicit functions (OpenAPI in `Engraving/openapi/`), traceable and testable.
+  - ScoreKit consumes Engraving outputs for grouping, spacing, ties/slurs, accidentals, etc.
+- Reflection (Verification + Feedback)
+  - Visual snapshots (PNG/SVG), score model diffs, and UMP traces.
+  - Benchmarks for latency/jitter, incremental reflow, memory.
+  - A/B previews and user confirmation loops for macro promotion.
+
+### System Components
+- API Contract: `spec/openapi.yaml` is the public contract for intents and preview orchestration.
+- Notation: `ScoreKit/` provides model + real‑time renderer and import/export (Lily interop optional, gated by `ENABLE_LILYPOND`).
+- Engraving Rules: `Engraving/` provides rules, coverage maps, and parity tooling.
+- Playback: `ScoreKit/Playback` emits UMP; engines live in `SDLKit/` and downstream projects.
+- UI/Preview: `Teatro/` provides SwiftUI previews and bridge APIs for live runs and comparisons.
 
 ---
 
-## Data Model (Core)
-- Identity: Every node has a stable `id` (UUID or ULID). Child IDs encode parent linkage.
-- Time: `Position` in measures + beats (rational), duration as rational. Don’t assume 4/4.
-- Pitch: spelling‑aware (step, alter, octave) plus convenience MIDI number.
-- Collections: `Score → Part → Staff → Measure → Voice → Event`
-- Event types: Note, Rest, Chord, Tie, Slur (spanning), Articulation, Dynamics, Hairpin, Tempo, Marker, Annotation.
-- Semantics: `SemanticTag(key: String, value: Scalar|Enum|Range)` stored on any node; reserved namespace `AudioTalk.*`.
-- Diff/Apply: Pure transforms produce new model instances; patch ops are serializable and composable.
-
-Key Swift API sketches:
-```swift
-struct ScoreID: Hashable { let raw: UUID }
-struct Beat: Equatable { let num: Int; let den: Int }
-struct Position: Equatable { let measure: Int; let beat: Beat }
-
-struct Pitch { let step: Step; let alter: Int; let octave: Int }
-struct Duration { let num: Int; let den: Int }
-
-struct SemanticTag: Hashable { let key: String; let value: SemanticValue }
-
-protocol ScoreNode { var id: ScoreID { get } var tags: [SemanticTag] { get } }
-```
-
-Design constraints:
-- Deterministic ordering (stable sort keys) for diff and snapshot tests.
-- No hidden global state; all transforms take explicit inputs and return outputs.
+## Cross‑Repo Conventions
+- Single source of truth
+  - Engraving rules → renderer behavior; avoid duplicating heuristics in UI.
+  - `spec/openapi.yaml` → service boundaries; keep implementations conformant.
+- Determinism
+  - Stable ordering, pure transforms for diffs/snapshots.
+- Errors
+  - No `fatalError` in libraries. Bubble typed errors with precise measure/beat/pitch context.
+- Logging
+  - Structured, category‑based, quiet in release.
+- Commits/PRs
+  - Semantic commits. Small PRs with before/after snapshots for visual or audio effects.
 
 ---
 
-## Engraving (LilyPond)
-- LilyPond is the canonical serialization of notation for archival/printing.
-- Implement `LilySession` to manage temp workdirs, `.ly` generation, process exec, stderr capture, and artifacts (PDF/SVG/PNG) collection.
-- On macOS/Linux: allow runtime LilyPond usage if binary present. On iOS: disable and fallback to native rendering.
+## Milestones (Project‑level)
+- P0 Preview Fidelity
+  - Ties (over barlines), compound meter beaming, slanted beams.
+  - CoreMIDI JR timestamps and host‑time mapping.
+  - Deterministic diffs and fast incremental reflow.
+- P1 Multi‑Voice + Semantics→Playback
+  - Voice collisions, stems, basic cross‑staff.
+  - Articulation timing/length profiles; initial per‑note attributes.
+- P2 Live AI Loop
+  - WebSocket/IPC preview stream; macro propose→review→promote.
+  - A/B snapshots for review; persistence into Fountain‑Store.
+- P3 Coverage + Import
+  - Lily subset round‑trip; key/time/tempo changes; more dynamics/ornaments.
 
-CLI constraints:
-- Use non‑interactive flags, e.g. `-dno-point-and-click`, output to temp dir, time‑bound process.
-- Capture and parse errors to surface precise diagnostics (measure, token) to UI/AI.
-
-Mapping guidelines:
-- Model → Lily: ensure idempotent emission; stable formatting to aid diff.
-- Semantics → Lily: encode as `%!AudioTalk: key=value` comments co‑located with emitting node.
-- Lily → Model: initially subset (notes, durations, ties, slurs, dynamics, hairpins, tempo). Round‑trip where possible; preserve unknown as passthrough comment blocks.
-
-Snapshot policy:
-- Golden assets for `.ly` and small PDFs/SVGs under `Tests/Fixtures` with size limits.
-
----
-
-## Real‑Time Renderer (SwiftUI/CoreGraphics)
-- Rendering goals: 60 fps interactions, <16 ms incremental updates for local edits, crisp vector output.
-- Layout: incremental engraving per measure/system; cache glyph metrics; reuse layout boxes.
-- Drawing: CoreGraphics for glyphs/lines; SwiftUI wrappers for composition; optional SVG export.
-- Interaction: hit‑testing, selection, marquee, caret/cursor, region highlight, follow‑playhead.
-- Animation: lightweight highlighter for “coaching” changes (fade/flash of affected region); integrates with Teatro storyboard concepts.
-
-Interfaces:
-```swift
-protocol ScoreRenderable {
-  func layout(score: Score, in rect: CGRect, options: LayoutOptions) -> LayoutTree
-  func draw(_ tree: LayoutTree, in ctx: CGContext)
-  func hitTest(_ tree: LayoutTree, at point: CGPoint) -> ScoreHit?
-}
-```
+Each deliverable defines Definition of Done: API doc + tests + snapshots + perf checks.
 
 ---
 
-## Semantics (AudioTalk)
-- Namespace: `AudioTalk.*` for standard tags (e.g., `AudioTalk.timbre.brightness`, `AudioTalk.articulation.legato`).
-- Attach semantics to any node; scope via ranges (by measure/beat) where needed.
-- Provide translation tables to UMP/engine params (see Playback). Keep them versioned.
-- Surface semantics both in Lily (comments) and in UI (tooltips/inspector).
+## Testing & Benchmarks
+- Unit tests for model transforms and encoders.
+- Property tests for round‑trips and idempotency where applicable.
+- Renderer snapshots (PNG/SVG); UMP traces for playback.
+- Bench in CI: layout/update timings with soft thresholds; JR jitter budget.
 
 ---
 
-## Playback / MIDI 2.0
-- Output UMP (MIDI 2.0) with per‑note expression aligned to notation.
-- JR Timestamps for tight sync with visual playhead.
-- Map semantics to engine params for midi2sampler/Csound/SDLKit via a profile table.
+## Tooling & Environments
+- Swift 5.9+ / SwiftPM; macOS primary.
+- LilyPond optional at runtime for interop (not bundled on iOS).
+- Submodules required; initialize with `git submodule update --init --recursive`.
 
 ---
 
-## Import / Export
-- Export: LilyPond (canonical), SVG/PNG snapshots (thumbnails/previews), JSON (model + semantics) for Fountain‑Store.
-- Import: LilyPond subset; MusicXML/MEI optional (guarded feature) if parsers available.
+## Documentation Policy
+- Current, normative docs stay minimal in this repo: `README.md`, this `AGENTS.md`, `spec/openapi.yaml`.
+- All legacy narrative docs, long‑form PDFs, and archival notes move to a new “Legacy Docs” repository.
+- Keep per‑repo AGENTS.md in submodules for code‑local guidance; link back to this document for cross‑repo rules.
 
 ---
 
-## Integration Points
-- FountainAI: expose high‑level ops (`addSlur`, `applyCrescendo(bars:)`, `annotate(tag:at:)`). Ensure deterministic, explainable diffs.
-- Fountain‑Store: persist model JSON + LilyPond + assets; include searchable metadata (keys, ranges, tags).
-- Teatro/UI: `ScoreView` SwiftUI component; highlight/animate changes; programmatic selection.
-
----
-
-## Performance Targets
-- Incremental edit to on‑screen update: P50 ≤ 16 ms, P95 ≤ 33 ms.
-- Full page layout (A4, moderate density): ≤ 150 ms on M‑class Macs.
-- Memory: cache bounded; LRU for glyphs/layout.
-
-Benchmarking:
-- Microbenchmarks for layout primitives.
-- Scenario tests: insert notes across a measure, add hairpin across 4 bars, toggle articulation across a page.
-
----
-
-## Testing Strategy
-- Unit tests: model transforms, diff/apply, identity preservation, rational arithmetic.
-- Property tests: round‑trip Lily subset, idempotency of emit/parse.
-- Snapshot tests: Lily `.ly` strings, rendered SVG/PNG (small viewports), layout trees (JSON form).
-- Integration tests: LilyPond exec (macOS/Linux CI only) with timeouts and artifact checks.
-
----
-
-## Tooling & Environment
-- Swift 5.9+ / SwiftPM.
-- LilyPond (runtime optional, not embedded on iOS). Detect via `PATH`.
-- PDFKit (macOS/iOS) for PDF display only; CoreGraphics for drawing.
-- Optional: Verovio (LGPL) via C interop or WASM if adopted — gated behind feature flag.
-
----
-
-## Licensing & Compliance
-- LilyPond (GPL) must not be bundled into iOS apps. Access at runtime (user‑installed) or via remote service. macOS command‑line usage is acceptable.
-- Keep third‑party code under compatible licenses; isolate via modules and feature flags.
-
----
-
-## Conventions
-- Coding: Swift API design guidelines; value types for model; protocol‑oriented for behaviors.
-- Errors: never `fatalError` in library; bubble typed errors with precise context.
-- Logging: structured, category‑based, silenced by default in release.
-- Doc comments: public APIs documented; examples included.
-- Commits: semantic commits (feat:, fix:, perf:, refactor:, docs:, test:, chore:). Reference tickets/issues.
-- PRs: small, focused, with before/after screenshots for rendering changes.
-
----
-
-## Milestones (Guided Delivery)
-- M0 Bootstrap: Package scaffolding, core types, fixtures, CI skeleton.
-- M1 LilyPond Wrapper: `.ly` emit + CLI exec + error capture + tests.
-- M2 Model Transforms: edits (slur, hairpin, articulation), diff/apply, semantics API.
-- M3 Renderer MVP: single‑staff layout + notes/rests + ties/slurs + simple dynamics; hit‑testing.
-- M4 Semantics→Playback: map tags to UMP profiles; follow playhead.
-- M5 Import: Lily subset parser and round‑trip tests.
-- M6 UI: `ScoreView` SwiftUI with selection and highlighting; Teatro hooks.
-- M7 Performance: caches, incremental layout, benchmarks.
-- M8 Docs & Examples: playground app; end‑to‑end demo with AudioTalk intents.
-
-Each milestone should define “Definition of Done” including tests and minimal docs.
-
----
-
-## Definition of Done (per feature)
-- API documented and covered by unit tests.
-- Snapshot/golden assets updated with review.
-- Performance doesn’t regress against baselines.
-- Errors surfaced with actionable messages (measure/beat context).
-
----
-
-## Agent Tips (for automated contributors)
-- Read and respect this AGENTS.md; scope applies only to ScoreKit paths.
-- Prefer minimal, surgical changes tied to an issue/milestone.
-- When adding new files, follow the Module Layout and Conventions above.
-- For LilyPond features, add fixtures and snapshot tests alongside code.
-- For renderer changes, attach comparison images in PR descriptions.
+## Next Steps (Migration Plan)
+- Create a new repo “AudioTalk‑LegacyDocs” in the Fountain‑Coach org.
+- Move top‑level legacy docs into it (see file list in PR):
+  - `VISION.md`, `STATUS-AUDIT.md`, `ScoreKit.txt`, `ScoreKit_*.pdf`, `AudioTalk_*.pdf`, and similar narrative assets.
+- In this repo:
+  - Keep `README.md`, `AGENTS.md`, and `spec/openapi.yaml` minimal and current.
+  - Replace moved files with links to the new repo.
+- Add CI job at top‑level to assert submodules initialized and run Engraving parity checks.
 
 ---
 
 ## References
-- “ScoreKit: Unifying Notation and Real‑Time Rendering in Fountain‑Coach” (PDF in repo root)
-- `VISION.md` in this repository (AudioTalk vision, semantics)
-- LilyPond documentation; MIDI 2.0 UMP specifications; Verovio design notes
+- “AudioTalk – The Composition Engine: Drift–Pattern–Reflection” (PDF)
+- `spec/openapi.yaml` — API contract
+- `ScoreKit/AGENTS.md` — local renderer/model guidance
+- `Engraving/AGENTS.md` — rules/coverage guidance
 

@@ -19,7 +19,8 @@ AudioTalk defines contracts and vision first. Implementations may vary, but the 
 
 ## Status & Next Steps
 
-See `STATUS-AUDIT.md` for the current ScoreKit audit, prioritized gaps (ties, compound meters, CoreMIDI scheduling), and a hook‑in plan for tomorrow.
+- See `AGENTS.md` for the updated, project‑wide engineering guide based on the Drift–Pattern–Reflection architecture.
+- Legacy narrative docs are being migrated to `LegacyDocs/` (staging for a separate `AudioTalk‑LegacyDocs` repository). Existing references will be updated after migration.
 
 ## Submodules
 This repo nests several focused projects as Git submodules:
