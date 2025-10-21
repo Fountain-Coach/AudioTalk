@@ -7,3 +7,6 @@
 xcuserdata/
 DerivedData/
 .swiftpm/
+/.legacy-docs-export/
+/_vendor/
+/.gh-logs/
